@@ -1,0 +1,107 @@
+#OBJECT TABLE
+CREATE OR REPLACE TYPE student_obj AS 
+OBJECT (
+    student_id NUMBER,
+    name VARCHAR2(50),
+    age NUMBER
+);
+/
+CREATE TABLE student_table OF student_obj;
+
+INSERT INTO student_table VALUES (1, 'Prabesh', 23);
+INSERT INTO student_table VALUES (2, 'Sabin', 24);
+INSERT INTO student_table VALUES (3, 'Kaji', 22);
+INSERT INTO student_table VALUES (4, 'Nirajan', 25);
+
+SELECT * FROM student_table;
+SELECT name FROM student_table;
+SELECT student_id, age FROM student_table;
+SELECT * FROM student_table WHERE age > 23;
+SELECT COUNT(*) FROM student_table;
+
+
+#RELATIONAL TABLE
+CREATE TABLE employee (
+    emp_id NUMBER,
+    emp_name VARCHAR2(50),
+    salary NUMBER
+);
+
+INSERT INTO employee VALUES (301, 'Prabesh', 70000);
+INSERT INTO employee VALUES (302, 'Sabin', 65000);
+INSERT INTO employee VALUES (303, 'Kaji', 72000);
+INSERT INTO employee VALUES (304, 'Nirajan', 68000);
+
+SELECT * FROM employee;
+SELECT emp_name FROM employee;
+SELECT emp_id, salary FROM employee;
+SELECT * FROM employee WHERE salary > 70000;
+SELECT AVG(salary) FROM employee;
+
+
+#VARRAY
+CREATE OR REPLACE TYPE phone_varray AS VARRAY(3) OF VARCHAR2(15);
+/
+CREATE TABLE person (
+    person_id NUMBER,
+    name VARCHAR2(50),
+    phones phone_varray
+);
+
+INSERT INTO person VALUES (1, 'Prabesh', phone_varray('9841111111','9842222222'));
+INSERT INTO person VALUES (2, 'Sabin', phone_varray('9853333333'));
+INSERT INTO person VALUES (3, 'Kaji', phone_varray('9864444444','9865555555'));
+INSERT INTO person VALUES (4, 'Nirajan', phone_varray('9876666666'));
+
+SELECT * FROM person;
+SELECT name FROM person;
+SELECT phones FROM person;
+SELECT p.name, p.phones FROM person p;
+SELECT COUNT(phones) FROM person;
+
+
+#OBJECT COLUMN
+CREATE OR REPLACE TYPE address_obj AS OBJECT (
+    city VARCHAR2(50),
+    country VARCHAR2(50)
+);
+/
+CREATE TABLE customer (
+    cust_id NUMBER,
+    cust_name VARCHAR2(50),
+    address address_obj
+);
+
+INSERT INTO customer VALUES (1, 'Prabesh', address_obj('Kathmandu','Nepal'));
+INSERT INTO customer VALUES (2, 'Sabin', address_obj('Beijing','China'));
+INSERT INTO customer VALUES (3, 'Kaji', address_obj('Moscow','Russia'));
+INSERT INTO customer VALUES (4, 'Nirajan', address_obj('Tehran','Iran'));
+INSERT INTO customer VALUES (5, 'Prabesh', address_obj('Pyongyang','NorthKorea'));
+
+SELECT * FROM customer;
+SELECT cust_name FROM customer;
+SELECT address FROM customer;
+SELECT c.address.city FROM customer c;
+SELECT * FROM customer WHERE address.country = 'China';
+
+
+#NESTED TABLE
+CREATE OR REPLACE TYPE course_nt AS TABLE OF VARCHAR2(50);
+/
+CREATE TABLE student_courses (
+    student_id NUMBER,
+    name VARCHAR2(50),
+    courses course_nt
+) NESTED TABLE courses STORE AS course_store;
+
+INSERT INTO student_courses VALUES (1, 'Prabesh', course_nt('AI','Cloud'));
+INSERT INTO student_courses VALUES (2, 'Sabin', course_nt('Networking','Security'));
+INSERT INTO student_courses VALUES (3, 'Kaji', course_nt('Data Science','Machine Learning'));
+INSERT INTO student_courses VALUES (4, 'Nirajan', course_nt('Blockchain','Cybersecurity'));
+
+SELECT * FROM student_courses;
+SELECT name FROM student_courses;
+SELECT courses FROM student_courses;
+SELECT s.name, c.COLUMN_VALUE
+FROM student_courses s, TABLE(s.courses) c;
+SELECT COUNT(*) FROM student_courses;
