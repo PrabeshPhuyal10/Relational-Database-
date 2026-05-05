@@ -4,6 +4,7 @@ OBJECT (
     student_id NUMBER,
     name VARCHAR2(50),
     age NUMBER
+
 );
 /
 CREATE TABLE student_table OF student_obj;
